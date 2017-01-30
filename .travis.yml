@@ -20,11 +20,17 @@ matrix:
   include:
     - php: 7.0
       env: PHPCS=1 DEFAULT=0
+    - php: 7.0
+      env: V34=1
 
 before_script:
   - if [[ $TRAVIS_PHP_VERSION != 7.0 ]]; then phpenv config-rm xdebug.ini; fi
 
   - composer install --prefer-dist --no-interaction
+
+  - if [[ $V34 = 1 ]]; then composer remove --dev cakephp/cakephp; fi
+  - if [[ $V34 = 1 ]]; then composer require --dev aura/intl:"3.0.0"; fi
+  - if [[ $V34 = 1 ]]; then composer require --dev cakephp/cakephp:"dev-3.next as 3.4"; fi
 
 script:
   - if [[ $DEFAULT = 1 && $TRAVIS_PHP_VERSION = 7.0 ]]; then phpunit --coverage-clover=clover.xml; fi
